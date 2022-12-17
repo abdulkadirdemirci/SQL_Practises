@@ -38,3 +38,31 @@ select distinct city, count(first_name) from
 where city is not null
 group by city
 order by count(first_name) desc
+
+-- hangi üründen kaç tane  satılmış
+-- how many times sold particular products
+select distinct order_details,  sum(order_quantity) from interviews.orders
+group by order_details
+
+
+-- ülkeler kırılımında en çok para harcayan müşteri
+-- sort the people who spend much more money than the others according to the cities
+select first_name,last_name,city, sum(order_quantity*order_cost) total_spent from
+    (select c.first_name,c.last_name,c.city,o.order_cost,o.order_quantity from interviews.customers c
+left join interviews.orders o on c.id = o.cust_id) sub1
+group by city,first_name, last_name
+having sum(order_quantity*order_cost)  is not null
+order by total_spent DESC
+
+
+-- belirtilen iki tarih arasında kaç birimlik alışveriş yapılmış
+-- how much money spent between specifick two date
+select sum(order_quantity*order_cost) consumption from interviews.orders
+where order_date between '2018-12-31' and '2019-03-10'
+
+
+-- belirtilen iki tarih arasında nerelerden alışveriş yapılmış
+-- where was shopping made from between specified dates
+select distinct city from interviews.orders o
+left join interviews.customers c on o.cust_id = c.id
+where order_date between '2019-03-03' and '2019-04-03'
